@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="620.0" prefWidth="428.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.PremierLeague.FXMLController">
+<BorderPane prefHeight="620.0" prefWidth="428.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.PremierLeague.FXMLController">
    <top>
       <Label text="Esame 14/07/2020 PremierLeague" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -42,12 +42,12 @@
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="btnClassifica" mnemonicParsing="false" onAction="#doClassifica" prefWidth="200.0" text="Classifica Squadra" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <Button fx:id="btnClassifica" disable="true" mnemonicParsing="false" onAction="#doClassifica" prefWidth="200.0" text="Classifica Squadra" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="btnSimula" mnemonicParsing="false" onAction="#doSimula" prefWidth="200.0" text="Collegamento" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                  <Button fx:id="btnSimula" disable="true" mnemonicParsing="false" onAction="#doSimula" prefWidth="200.0" text="Collegamento" GridPane.columnIndex="2" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
@@ -72,7 +72,7 @@
                   <TextField fx:id="txtX" maxWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
-            <TextArea fx:id="txtResult" prefHeight="436.0" prefWidth="428.0">
+            <TextArea fx:id="txtResult" editable="false" prefHeight="436.0" prefWidth="428.0">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
