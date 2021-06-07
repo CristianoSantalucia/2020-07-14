@@ -44,7 +44,7 @@ public class PremierLeagueDAO
 		}
 	}
 
-	public void getTeams(Map<Integer, Team> teams)
+	public void getVertici(Map<Integer, Team> teams)
 	{
 		String sql = "SELECT DISTINCT * "
 					+ "FROM teams";
@@ -135,29 +135,9 @@ public class PremierLeagueDAO
 			return null;
 		}
 	}
-	private List<Adiacenza> getAdiacenze(Map<Integer, Team> teams)
+	public List<Adiacenza> getAdiacenze(Map<Integer, Team> teams)
 	{
-		String sql = "SELECT c1.teamId AS id1, c2.teamId AS id2, c1.punti-c2.punti AS diff "
-					+ "FROM ( SELECT pareggi.teamId, vittorie.vittorie * 3 + pareggi.pareggi AS punti "
-					+ "	 		FROM  ( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS pareggi "
-					+ "				FROM matches AS m "
-					+ "				WHERE m.ResultOfTeamHome = 0 "
-					+ "				GROUP BY m.TeamHomeID ) AS pareggi, "
-					+ "			( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie "
-					+ "				FROM matches AS m\n"
-					+ "				WHERE m.ResultOfTeamHome = 1 "
-					+ "				GROUP BY m.TeamHomeID   ) AS vittorie ) AS c1, "
-					+ "		( SELECT pareggi.teamId, vittorie.vittorie * 3 + pareggi.pareggi AS punti "
-					+ "	 		FROM  ( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS pareggi "
-					+ "				FROM matches AS m "
-					+ "				WHERE m.ResultOfTeamHome = 0 "
-					+ "				GROUP BY m.TeamHomeID ) AS pareggi, "
-					+ "			( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie "
-					+ "				FROM matches AS m "
-					+ "				WHERE m.ResultOfTeamHome = 1 "
-					+ "				GROUP BY m.TeamHomeID   ) AS vittorie ) AS c2 "
-					+ "WHERE c1.teamId < c2.teamId "
-					+ "GROUP BY c1.teamId, c2.teamId ";
+		String sql = "SELECT t1.teamId AS id1, t2.teamId AS id2, (t1.punti-t2.punti) AS peso FROM ( SELECT t1.teamId, SUM(t1.pareggi + t2.vittorie * 3) AS punti FROM ( SELECT t1.teamId, SUM(t1.vittorie + t2.vittorie) AS pareggi FROM  ( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = 0 GROUP BY m.TeamHomeID ) AS t1, ( SELECT m.TeamAwayID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = 0 GROUP BY m.TeamAwayID ) AS t2 WHERE t1.teamId = t2.teamId GROUP BY t1.teamId ) AS t1, ( SELECT t1.teamId, SUM(t1.vittorie + t2.vittorie) AS vittorie FROM  ( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = 1 GROUP BY m.TeamHomeID ) AS t1, ( SELECT m.TeamAwayID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = -1 GROUP BY m.TeamAwayID ) AS t2 WHERE t1.teamId = t2.teamId GROUP BY t1.teamId ) AS t2 WHERE t1.teamId = t2.teamId GROUP BY t1.teamId ) AS t1, (SELECT t1.teamId, SUM(t1.pareggi + t2.vittorie * 3) AS punti FROM ( SELECT t1.teamId, SUM(t1.vittorie + t2.vittorie) AS pareggi FROM  ( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = 0 GROUP BY m.TeamHomeID ) AS t1, ( SELECT m.TeamAwayID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = 0 GROUP BY m.TeamAwayID ) AS t2 WHERE t1.teamId = t2.teamId GROUP BY t1.teamId ) AS t1, ( SELECT t1.teamId, SUM(t1.vittorie + t2.vittorie) AS vittorie FROM  ( SELECT m.TeamHomeID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = 1 GROUP BY m.TeamHomeID ) AS t1, ( SELECT m.TeamAwayID AS teamId, COUNT(m.ResultOfTeamHome) AS vittorie FROM matches AS m WHERE m.ResultOfTeamHome = -1 GROUP BY m.TeamAwayID ) AS t2 WHERE t1.teamId = t2.teamId GROUP BY t1.teamId ) AS t2 WHERE t1.teamId = t2.teamId GROUP BY t1.teamId) AS t2 WHERE t1.teamId < t2.teamId AND t1.punti - t2.punti <> 0 ORDER BY t1.teamId, t2.teamId"; 
 		
 		List<Adiacenza> result = new ArrayList<>();
 		Connection conn = DBConnect.getConnection();
@@ -170,7 +150,7 @@ public class PremierLeagueDAO
 			{
 				Team t1 = teams.get(res.getInt("id1")); 
 				Team t2 = teams.get(res.getInt("id2")); 
-				Integer diff = res.getInt("diff"); 
+				Integer diff = res.getInt("peso"); 
 				if (t1 != null && t2 != null)
 				{
 					Adiacenza a = new Adiacenza(t1, t2, diff); 
@@ -186,4 +166,7 @@ public class PremierLeagueDAO
 			return null;
 		}
 	}
+	
+	
+	
 }

@@ -4,13 +4,13 @@ public class Adiacenza
 {
 	private Team t1; 
 	private Team t2; 
-	private Integer diff;
+	private Integer peso;
 	
 	public Adiacenza(Team t1, Team t2, Integer diff)
 	{
 		this.t1 = t1;
 		this.t2 = t2;
-		this.diff = diff;
+		this.peso = diff;
 	}
 	public Team getT1()
 	{
@@ -30,15 +30,15 @@ public class Adiacenza
 	}
 	public Integer getDiff()
 	{
-		return diff;
+		return peso;
 	}
 	public void setDiff(Integer diff)
 	{
-		this.diff = diff;
+		this.peso = diff;
 	}
 	@Override public String toString()
 	{
-		return "Adiacenza [t1=" + t1 + ", t2=" + t2 + ", diff=" + diff + "]";
+		return "Adiacenza [t1=" + t1 + ", t2=" + t2 + ", diff=" + peso + "]";
 	}
 	@Override public int hashCode()
 	{
