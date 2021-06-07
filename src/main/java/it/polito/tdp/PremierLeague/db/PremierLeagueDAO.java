@@ -106,7 +106,10 @@ public class PremierLeagueDAO
 	public List<Match> listAllMatches()
 	{
 		String sql = "SELECT m.MatchID, m.TeamHomeID, m.TeamAwayID, m.teamHomeFormation, m.teamAwayFormation, m.resultOfTeamHome, m.date, t1.Name, t2.Name   "
-				+ "FROM Matches m, Teams t1, Teams t2 " + "WHERE m.TeamHomeID = t1.TeamID AND m.TeamAwayID = t2.TeamID";
+					+ "FROM Matches m, Teams t1, Teams t2 " 
+					+ "WHERE m.TeamHomeID = t1.TeamID AND m.TeamAwayID = t2.TeamID "
+					+ "ORDER BY m.date";
+		
 		List<Match> result = new ArrayList<Match>();
 		Connection conn = DBConnect.getConnection();
 

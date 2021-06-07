@@ -69,7 +69,8 @@ public class FXMLController
 		}
 		catch (Exception e)
 		{
-			this.txtResult.appendText("\nERRORE");
+			this.txtResult.appendText("\nERRORE 1 ");
+			e.printStackTrace();
 		}
 	}
 
@@ -95,13 +96,28 @@ public class FXMLController
 		}
 		catch (Exception e)
 		{
-			this.txtResult.appendText("\nERRORE");
+			this.txtResult.appendText("\nERRORE 2 ");
+			e.printStackTrace();
 		}
 	}
 	
 	@FXML void doSimula(ActionEvent event)
 	{
-
+		try
+		{
+			Integer N = Integer.parseInt(this.txtN.getText());
+			Integer X = Integer.parseInt(this.txtX.getText());
+			
+			if(N > 0 && X > 0)
+				this.model.simula(N, X);
+			else 
+				this.txtResult.appendText("\nINSERIRE NUMERI SENSATI. COGLIONE");
+		}
+		catch (NumberFormatException e)
+		{
+			this.txtResult.appendText("\nERRORE 3");
+			e.printStackTrace();
+		}
 	}
 
 	@FXML // This method is called by the FXMLLoader when initialization is complete

@@ -11,8 +11,9 @@ import it.polito.tdp.PremierLeague.db.PremierLeagueDAO;
 public class Model
 {
 	private PremierLeagueDAO dao;
-	private Map<Integer, Team> idMap; 
+	private Map<Integer, Team> teams; 
 	private Graph<Team, DefaultWeightedEdge> grafo; 
+	
 	
 	public Model()
 	{
@@ -22,15 +23,15 @@ public class Model
 	public void creaGrafo()
 	{
 		// ripulisco mappa e grafo
-		this.idMap = new HashMap<>(); 
+		this.teams = new HashMap<>(); 
 		this.grafo = new SimpleDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 		
 		/// vertici 
-		this.dao.getVertici(idMap); //riempio la mappa
-		Graphs.addAllVertices(this.grafo, this.idMap.values()); 
+		this.dao.getVertici(teams); //riempio la mappa
+		Graphs.addAllVertices(this.grafo, this.teams.values()); 
 		
 		/// archi
-		List<Adiacenza> adiacenze = new ArrayList<>(this.dao.getAdiacenze(this.idMap));
+		List<Adiacenza> adiacenze = new ArrayList<>(this.dao.getAdiacenze(this.teams));
 		for (Adiacenza a : adiacenze)
 		{ 
 			if(a.getDiff() < 0)
@@ -75,5 +76,20 @@ public class Model
 		for (DefaultWeightedEdge e : edges)
 			vicini.put(Graphs.getOppositeVertex(this.grafo, e, s), this.grafo.getEdgeWeight(e));
 		return vicini; 
+	}
+	
+	public Map<Integer, Team> getTeams()
+	{
+		return this.teams;  
+	}
+	
+	private Simulatore theSims;
+	
+	public void simula(int N, int X)
+	{
+		List<Team> teams = new ArrayList<>(this.teams.values()); 
+		List<Match> matches = new ArrayList<>(this.dao.listAllMatches()); 
+		this.theSims = new Simulatore(this, N, X, teams, matches);
+		this.theSims.run();
 	}
 }
